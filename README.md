@@ -38,7 +38,7 @@ A stunning 3D Earth visualization built with Next.js and Three.js, featuring rea
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/AjayRajNegi/3d-hero--threejs.git
 cd 3d_planet
 ```
 
