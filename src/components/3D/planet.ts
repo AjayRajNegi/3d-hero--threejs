@@ -1,5 +1,6 @@
 import gsap from "gsap";
 import * as THREE from "three";
+import { ScrollTrigger } from "gsap/all";
 
 import earthVertex from "./shaders/earth/vertex.glsl";
 import earthFragment from "./shaders/earth/fragment.glsl";
@@ -7,7 +8,10 @@ import earthFragment from "./shaders/earth/fragment.glsl";
 import atmosphereVertex from "./shaders/atmosphere/vertex.glsl";
 import atmosphereFragment from "./shaders/atmosphere/fragment.glsl";
 
-const initPlanet3D = (): { scene: THREE.Scene } => {
+const initPlanet3D = (): {
+  scene: THREE.Scene;
+  renderer: THREE.WebGLRenderer;
+} => {
   const canvas = document.querySelector(
     "canvas.planet-3D"
   ) as HTMLCanvasElement;
@@ -113,6 +117,39 @@ const initPlanet3D = (): { scene: THREE.Scene } => {
   atmosphereMaterial.uniforms.uSunDirection.value.copy(sunDirection);
 
   scene.add(earthGroup);
+  gsap.registerPlugin(ScrollTrigger);
+  gsap
+    .timeline({
+      scrollTrigger: {
+        trigger: ".hero_main",
+        start: () => "top top",
+        scrub: 3,
+        anticipatePin: 1,
+        pin: true,
+      },
+    })
+    .to(
+      ".hero_main .content",
+      {
+        filter: `blur(40px)`,
+        autoAlpha: 0,
+        scale: 0.5,
+        duration: 2,
+        ease: "power1.inOut",
+      },
+      "setting"
+    )
+    .to(
+      camera.position,
+      {
+        y: 0.1,
+        z: window.innerWidth > 768 ? 19 : 30,
+        x: window.innerWidth > 768 ? 0 : 0.1,
+        duration: 2,
+        ease: "power1.inOut",
+      },
+      "setting"
+    );
 
   //   Animation Loop
   gsap.ticker.add((time) => {
@@ -133,7 +170,7 @@ const initPlanet3D = (): { scene: THREE.Scene } => {
     renderer.setPixelRatio(size.pixelRatio);
   });
 
-  return { scene };
+  return { scene, renderer };
 };
 
 export default initPlanet3D;
