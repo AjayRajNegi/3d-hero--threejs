@@ -1,6 +1,9 @@
 import gsap from "gsap";
 import * as THREE from "three";
 
+import earthVertex from "./shaders/earth/vertex.glsl";
+import earthFragment from "./shaders/earth/fragment.glsl";
+
 const initPlanet3D = (): { scene: THREE.Scene } => {
   const canvas = document.querySelector(
     "canvas.planet-3D"
@@ -39,39 +42,34 @@ const initPlanet3D = (): { scene: THREE.Scene } => {
   //   Geometry
   const earthGeometry = new THREE.SphereGeometry(2, 64, 64);
 
+  // texture
+  const TL = new THREE.TextureLoader();
+  const dayTexture = TL.load("../../earth/day.jpg");
+  const nightTexture = TL.load("../../earth/night.jpg");
+  const specularCloudsTexture = TL.load("../../earth/specularClouds.jpg");
+
+  dayTexture.colorSpace = THREE.SRGBColorSpace;
+  nightTexture.colorSpace = THREE.SRGBColorSpace;
+
+  const baseAnisotropy = renderer.capabilities.getMaxAnisotropy();
+
+  dayTexture.anisotropy = baseAnisotropy;
+  specularCloudsTexture.anisotropy = baseAnisotropy;
+  nightTexture.anisotropy = baseAnisotropy;
+
   //   Material
   const earthMaterial = new THREE.ShaderMaterial({
-    vertexShader: `
-    varying vec2 vUv;
-    varying vec3 vNormal;
-    varying vec3 vPosition;
-
-    void main(){
-        //Position
-        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * viewMatrix * modelPosition;
-    
-        //Model Normal
-        vec3 modelNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
-
-        //Varying
-        vUv = uv;
-        vNormal = modelNormal;
-        vPosition = modelPosition.xyz;
-    }
-    `,
-    fragmentShader: `
-    varying vec2 vUv;
-    varying vec3 vNormal;
-    varying vec3 vPosition;
-
-    void main(){
-        vec3 viewDirection = normalize(vPosition - cameraPosition);
-        vec3 normal = normalize(vNormal);
-        gl_FragColor = vec4(normal, 1.0);
-    }
-    `,
+    vertexShader: earthVertex,
+    fragmentShader: earthFragment,
     transparent: true,
+    uniforms: {
+      uDayTexture: { value: dayTexture },
+      uNightTexture: { value: nightTexture },
+      uSpecularCloudsTexture: { value: specularCloudsTexture },
+      uSunDirection: { value: new THREE.Vector3(1, 0, 0) },
+      uAtmosphereDayColor: { value: new THREE.Color(0x87ceeb) },
+      uAtmosphereTwilightColor: { value: new THREE.Color(0xff8c00) },
+    },
   });
 
   const earth = new THREE.Mesh(earthGeometry, earthMaterial);
@@ -80,9 +78,22 @@ const initPlanet3D = (): { scene: THREE.Scene } => {
 
   //   Animation Loop
   gsap.ticker.add((time) => {
+    earth.rotation.y = time * 0.2;
     renderer.render(scene, camera);
   });
   gsap.ticker.lagSmoothing(0);
+
+  window.addEventListener("resize", () => {
+    size.width = window.innerWidth;
+    size.height = window.innerHeight;
+    size.pixelRatio = window.devicePixelRatio;
+
+    camera.aspect = size.width / size.height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(size.width, size.height);
+    renderer.setPixelRatio(size.pixelRatio);
+  });
 
   return { scene };
 };
