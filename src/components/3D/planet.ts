@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import * as THREE from "three";
-const initPlanet = (): { scene: THREE.Scene } => {
+
+const initPlanet3D = (): { scene: THREE.Scene } => {
   const canvas = document.querySelector(
     "canvas.planet-3D"
   ) as HTMLCanvasElement;
@@ -35,6 +36,48 @@ const initPlanet = (): { scene: THREE.Scene } => {
   renderer.setClearColor(0x0000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
+  //   Geometry
+  const earthGeometry = new THREE.SphereGeometry(2, 64, 64);
+
+  //   Material
+  const earthMaterial = new THREE.ShaderMaterial({
+    vertexShader: `
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main(){
+        //Position
+        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * viewMatrix * modelPosition;
+    
+        //Model Normal
+        vec3 modelNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
+
+        //Varying
+        vUv = uv;
+        vNormal = modelNormal;
+        vPosition = modelPosition.xyz;
+    }
+    `,
+    fragmentShader: `
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main(){
+        vec3 viewDirection = normalize(vPosition - cameraPosition);
+        vec3 normal = normalize(vNormal);
+        gl_FragColor = vec4(normal, 1.0);
+    }
+    `,
+    transparent: true,
+  });
+
+  const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+
+  scene.add(earth);
+
   //   Animation Loop
   gsap.ticker.add((time) => {
     renderer.render(scene, camera);
@@ -44,4 +87,4 @@ const initPlanet = (): { scene: THREE.Scene } => {
   return { scene };
 };
 
-export default initPlanet;
+export default initPlanet3D;
