@@ -1,9 +1,10 @@
 "use client";
+import initPlanet3D from "@/components/3D/Planet";
 import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
-    // initPlanet3D();
+    initPlanet3D();
   }, []);
   return (
     <div className="page">
