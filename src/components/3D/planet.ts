@@ -66,13 +66,18 @@ const initPlanet3D = (): { scene: THREE.Scene } => {
       uDayTexture: { value: dayTexture },
       uNightTexture: { value: nightTexture },
       uSpecularCloudsTexture: { value: specularCloudsTexture },
-      uSunDirection: { value: new THREE.Vector3(1, 0, 0) },
+      uSunDirection: { value: new THREE.Vector3(-1, 0, 0) },
       uAtmosphereDayColor: { value: new THREE.Color(0x87ceeb) },
       uAtmosphereTwilightColor: { value: new THREE.Color(0xff8c00) },
     },
   });
 
   const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+  let sunSpherical = new THREE.Spherical(1, Math.PI * 0.48, -1.0);
+  const sunDirection = new THREE.Vector3();
+
+  sunDirection.setFromSpherical(sunSpherical);
+  earthMaterial.uniforms.uSunDirection.value.copy(sunDirection);
 
   scene.add(earth);
 
