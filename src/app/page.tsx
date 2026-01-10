@@ -1,9 +1,8 @@
 "use client";
 import initPlanet3D from "@/components/3D/planet";
-import WorldGlobe from "@/components/WorldGlobe";
 import { useEffect } from "react";
 import Globe from "../components/Globe";
-
+import { World } from "../components/Basic";
 export default function Home() {
   useEffect(() => {
     // initPlanet3D();
@@ -22,8 +21,9 @@ export default function Home() {
           <button className="cta_btn">Get started.</button>
         </div>
         {/* <canvas className="planet-3D" /> */}
-        <div className="planet-3D">
-          <Globe />
+        <div className="w-full">
+          {/* <Globe /> */}
+          <World />
         </div>
       </section>
     </div>
