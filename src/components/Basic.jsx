@@ -127,7 +127,7 @@ export default function Basic() {
     camera.far = 10000;
     camera.aspect = size.width / size.height;
 
-    camera.position.set(0, 100, 200);
+    camera.position.set(0, 110, 150);
     //camera.position.set(0, 0, 500);
 
     const lookAtPoint = camera.position.clone();
@@ -159,6 +159,7 @@ export default function Basic() {
       .timeline({
         scrollTrigger: {
           trigger: ".hero_main",
+          end: "+=200%",
           start: () => "top top",
           scrub: 3,
           anticipatePin: 1,
@@ -174,7 +175,7 @@ export default function Basic() {
           duration: 2,
           ease: "power1.inOut",
         },
-        "setting"
+        0
       )
       .to(
         camera.position,
@@ -185,7 +186,7 @@ export default function Basic() {
           duration: 2,
           ease: "power1.inOut",
         },
-        "setting"
+        0
       );
 
     gsap.ticker.add((time) => {
@@ -198,6 +199,7 @@ export default function Basic() {
     <Globe
       ref={globeEl}
       globeImageUrl="/earth/day.jpg"
+      bumpImageUrl="/earth/specularClouds.jpg"
       showAtmosphere={true}
       backgroundColor="rgba(0,0,0,0)"
       rendererConfig={{
@@ -206,7 +208,7 @@ export default function Basic() {
       }}
       onGlobeReady={handleGlobeReady}
       arcsData={routes}
-      arcLabel={(d) => `${d.airline}: ${d.srcIata} → ${d.dstIata}`}
+      // arcLabel={(d) => `${d.airline}: ${d.srcIata} → ${d.dstIata}`}
       arcStartLat={(d) => +d.srcAirport.lat}
       arcStartLng={(d) => +d.srcAirport.lng}
       arcEndLat={(d) => +d.dstAirport.lat}

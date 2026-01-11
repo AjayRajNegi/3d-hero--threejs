@@ -122,14 +122,12 @@ const initPlanet3D = (): {
     scrollTrigger: {
       trigger: ".hero_main",
       start: "top top",
-      end: "+=300%", // enough scroll room
+      end: "+=300%",
       scrub: 3,
       pin: true,
       anticipatePin: 1,
     },
   });
-
-  // PHASE 1 – intro
   tl.to(
     ".hero_main .content",
     {
@@ -140,7 +138,6 @@ const initPlanet3D = (): {
     },
     0
   );
-
   tl.to(
     camera.position,
     {
@@ -152,7 +149,6 @@ const initPlanet3D = (): {
     0
   );
 
-  // PHASE 2 – reveal content2
   tl.to(
     ".content2",
     {
@@ -161,8 +157,6 @@ const initPlanet3D = (): {
     },
     1
   );
-
-  // PHASE 3 – FINAL camera move
   tl.to(
     camera.position,
     {
@@ -171,7 +165,7 @@ const initPlanet3D = (): {
       z: 4.5,
       ease: "power2.inOut",
     },
-    1.5
+    2
   );
 
   //   Animation Loop

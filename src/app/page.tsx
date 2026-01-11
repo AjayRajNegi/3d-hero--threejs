@@ -6,7 +6,7 @@ import Basic from "../components/Basic";
 
 export default function Home() {
   useEffect(() => {
-    initPlanet3D();
+    //initPlanet3D();
   }, []);
   return (
     <div className="page">
@@ -20,7 +20,7 @@ export default function Home() {
 
           <button className="cta_btn">Get started.</button>
         </div>
-        <canvas className="planet-3D" />
+        {/* <canvas className="planet-3D" /> */}
 
         <div className="content2">
           <p>Meet our satellite constellation ATLAS !</p>
@@ -28,9 +28,9 @@ export default function Home() {
 
           <div></div>
         </div>
-        {/* <div className="w-full">
+        <div className="planet">
           <Basic />
-        </div> */}
+        </div>
       </section>
     </div>
   );
