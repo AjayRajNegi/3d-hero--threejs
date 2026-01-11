@@ -1,12 +1,12 @@
 "use client";
+
 import initPlanet3D from "@/components/3D/planet";
 import { useEffect } from "react";
-import Globe from "../components/Globe";
-import World from "../components/Basic";
+import Basic from "../components/Basic";
+
 export default function Home() {
   useEffect(() => {
-    // initPlanet3D();
-    //initAirplane3D();
+    initPlanet3D();
   }, []);
   return (
     <div className="page">
@@ -20,11 +20,10 @@ export default function Home() {
 
           <button className="cta_btn">Get started.</button>
         </div>
-        {/* <canvas className="planet-3D" /> */}
-        <div className="w-full">
-          {/* <Globe /> */}
-          <World />
-        </div>
+        <canvas className="planet-3D" />
+        {/* <div className="w-full">
+          <Basic />
+        </div> */}
       </section>
     </div>
   );

@@ -1,4 +1,5 @@
 "use client";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { useState, useEffect, useRef } from "react";
@@ -65,7 +66,7 @@ const routeParse = ([
   equipment,
 });
 
-export default function World() {
+export default function Basic() {
   const globeEl = useRef();
   const [airports, setAirports] = useState([]);
   const [routes, setRoutes] = useState([]);
