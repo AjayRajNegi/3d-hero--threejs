@@ -1,7 +1,6 @@
 "use client";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/all";
-import { useState, useEffect, useRef } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import indexBy from "index-array-by";
 import { csvParseRows } from "d3-dsv";
 import dynamic from "next/dynamic";
@@ -42,7 +41,6 @@ const airportParse = ([
   type,
   source,
 });
-
 const routeParse = ([
   airline,
   airlineId,
@@ -65,7 +63,7 @@ const routeParse = ([
   equipment,
 });
 
-export default function World() {
+export const Globe1 = () => {
   const globeEl = useRef();
   const [airports, setAirports] = useState([]);
   const [routes, setRoutes] = useState([]);
@@ -90,8 +88,8 @@ export default function World() {
         .filter(
           (d) =>
             byIata.hasOwnProperty(d.srcIata) && byIata.hasOwnProperty(d.dstIata)
-        )
-        .filter((d) => d.stops === "0")
+        ) // exclude unknown airports
+        .filter((d) => d.stops === "0") // non-stop flights only
         .map((d) =>
           Object.assign(d, {
             srcAirport: byIata[d.srcIata],
@@ -101,7 +99,7 @@ export default function World() {
         .filter(
           (d) =>
             d.srcAirport.country === COUNTRY && d.dstAirport.country !== COUNTRY
-        );
+        ); // international routes from country
 
       setAirports(airports);
       setRoutes(filteredRoutes);
@@ -111,93 +109,49 @@ export default function World() {
   const handleGlobeReady = () => {
     if (!globeEl.current) return;
 
-    const camera = globeEl.current.camera();
-    const controls = globeEl.current.controls();
-    const scene = globeEl.current.scene();
-
     const size = {
       width: window.innerWidth,
       height: window.innerHeight,
       pixelRatio: window.devicePixelRatio,
     };
 
-    camera.fov = 30;
+    const camera = globeEl.current.camera();
+    const controls = globeEl.current.controls();
+
+    // --- Camera (MATCHES Three.js SCENE) ---
+    camera.fov = 15;
     camera.near = 0.1;
     camera.far = 10000;
-    camera.aspect = size.width / size.height;
+    camera.pixelRatio = size.width / size.height;
 
-    camera.position.set(0, 100, 200);
-    //camera.position.set(0, 0, 500);
+    globeEl.current.pointOfView({ lat: 0, lng: 0, altitude: 10 });
+    camera.position.set(
+      0, // x
+      1.075, // y (scaled from 2.15)
+      800.25 // z (scaled from 4.5)
+    );
 
-    const lookAtPoint = camera.position.clone();
-    lookAtPoint.z -= 100; // Look 100 units in front along -Z axis
-    camera.lookAt(lookAtPoint);
-
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
 
+    // --- Controls (match static camera feel) ---
     if (controls) {
-      controls.enabled = false;
+      controls.enableZoom = true;
+      controls.enablePan = false;
+      controls.enableRotate = false;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.2;
+      controls.update();
     }
-    // let animationId;
-    // const animate = () => {
-    //   if (scene) {
-    //     scene.rotation.y += 0.001; // Auto-rotate the globe
-    //   }
-
-    //   animationId = requestAnimationFrame(animate);
-    // };
-    // animate();
-    // return () => {
-    //   if (animationId) cancelAnimationFrame(animationId);
-    // };
-
-    // Animations
-    gsap.registerPlugin(ScrollTrigger);
-
-    gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: ".hero_main",
-          start: () => "top top",
-          scrub: 3,
-          anticipatePin: 1,
-          pin: true,
-        },
-      })
-      .to(
-        ".hero_main .content",
-        {
-          filter: `blur(40px)`,
-          autoAlpha: 0,
-          scale: 0.5,
-          duration: 2,
-          ease: "power1.inOut",
-        },
-        "setting"
-      )
-      .to(
-        camera.position,
-        {
-          x: 0,
-          y: window.innerWidth > 768 ? 0 : 0,
-          z: window.innerWidth > 768 ? 500 : 500,
-          duration: 2,
-          ease: "power1.inOut",
-        },
-        "setting"
-      );
-
-    gsap.ticker.add((time) => {
-      scene.rotation.y = time * 0.2;
-    });
-    gsap.ticker.lagSmoothing(0);
   };
 
   return (
     <Globe
+      size={0.5}
       ref={globeEl}
       globeImageUrl="/earth/day.jpg"
-      showAtmosphere={true}
+      bumpImageUrl="/earth/specularClouds.jpg"
+      showAtmosphere={false}
       backgroundColor="rgba(0,0,0,0)"
       rendererConfig={{
         antialias: true,
@@ -205,15 +159,16 @@ export default function World() {
       }}
       onGlobeReady={handleGlobeReady}
       arcsData={routes}
-      arcLabel={(d) => `${d.airline}: ${d.srcIata} → ${d.dstIata}`}
+      arcLabel={(d) => `${d.airline}: ${d.srcIata} &#8594; ${d.dstIata}`}
       arcStartLat={(d) => +d.srcAirport.lat}
       arcStartLng={(d) => +d.srcAirport.lng}
       arcEndLat={(d) => +d.dstAirport.lat}
       arcEndLng={(d) => +d.dstAirport.lng}
-      arcDashLength={0}
+      arcDashLength={0.5}
       arcDashGap={1}
       arcDashInitialGap={() => Math.random()}
       arcDashAnimateTime={4000}
+      // arcColor={d => [`rgba(0, 255, 0, ${OPACITY})`, `rgba(255, 0, 0, ${OPACITY})`]}
       arcsTransitionDuration={0}
       arcStroke={null}
       arcColor={() => "#88602333"}
@@ -224,4 +179,4 @@ export default function World() {
       pointsMerge={true}
     />
   );
-}
+};

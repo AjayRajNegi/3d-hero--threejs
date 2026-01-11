@@ -2,7 +2,7 @@
 import initPlanet3D from "@/components/3D/planet";
 import { useEffect } from "react";
 import Globe from "../components/Globe";
-import { World } from "../components/Basic";
+import World from "../components/Basic";
 export default function Home() {
   useEffect(() => {
     // initPlanet3D();
