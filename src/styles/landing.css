@@ -21,7 +21,7 @@
     align-items: center;
     gap: 1.4rem;
     width: 100dvw;
-    z-index: 1;
+    z-index: 0;
 
     h1 {
       font-weight: 500;
@@ -46,4 +46,29 @@
       outline: 1.5px solid rgba(0, 0, 0, 0.2);
     }
   }
+}
+
+.content2 {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  max-width: 1000px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  width: 100dvw;
+  z-index: 1;
+  opacity: 0;
+
+  h1 {
+    font-size: xx-large;
+  }
+}
+
+.planet {
+  z-index: 2;
 }

@@ -118,38 +118,55 @@ const initPlanet3D = (): {
 
   scene.add(earthGroup);
   gsap.registerPlugin(ScrollTrigger);
-  gsap
-    .timeline({
-      scrollTrigger: {
-        trigger: ".hero_main",
-        start: () => "top top",
-        scrub: 3,
-        anticipatePin: 1,
-        pin: true,
-      },
-    })
-    .to(
-      ".hero_main .content",
-      {
-        filter: `blur(40px)`,
-        autoAlpha: 0,
-        scale: 0.5,
-        duration: 2,
-        ease: "power1.inOut",
-      },
-      "setting"
-    )
-    .to(
-      camera.position,
-      {
-        y: 0.1,
-        z: window.innerWidth > 768 ? 19 : 30,
-        x: window.innerWidth > 768 ? 0 : 0.1,
-        duration: 2,
-        ease: "power1.inOut",
-      },
-      "setting"
-    );
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".hero_main",
+      start: "top top",
+      end: "+=300%",
+      scrub: 3,
+      pin: true,
+      anticipatePin: 1,
+    },
+  });
+  tl.to(
+    ".hero_main .content",
+    {
+      filter: "blur(40px)",
+      autoAlpha: 0,
+      scale: 0.5,
+      ease: "power1.inOut",
+    },
+    0
+  );
+  tl.to(
+    camera.position,
+    {
+      y: 0.1,
+      z: window.innerWidth > 768 ? 19 : 30,
+      x: window.innerWidth > 768 ? 0 : 0.1,
+      ease: "power1.inOut",
+    },
+    0
+  );
+
+  tl.to(
+    ".content2",
+    {
+      opacity: 1,
+      ease: "power1.inOut",
+    },
+    1
+  );
+  tl.to(
+    camera.position,
+    {
+      x: 0,
+      y: 2.15,
+      z: 4.5,
+      ease: "power2.inOut",
+    },
+    2
+  );
 
   //   Animation Loop
   gsap.ticker.add((time) => {
