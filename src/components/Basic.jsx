@@ -131,7 +131,7 @@ export default function Basic() {
     //camera.position.set(0, 0, 500);
 
     const lookAtPoint = camera.position.clone();
-    lookAtPoint.z -= 100; // Look 100 units in front along -Z axis
+    lookAtPoint.z -= 100;
     camera.lookAt(lookAtPoint);
 
     camera.updateProjectionMatrix();
@@ -139,56 +139,111 @@ export default function Basic() {
     if (controls) {
       controls.enabled = false;
     }
-    // let animationId;
-    // const animate = () => {
-    //   if (scene) {
-    //     scene.rotation.y += 0.001; // Auto-rotate the globe
-    //   }
-
-    //   animationId = requestAnimationFrame(animate);
-    // };
-    // animate();
-    // return () => {
-    //   if (animationId) cancelAnimationFrame(animationId);
-    // };
 
     // Animations
     gsap.registerPlugin(ScrollTrigger);
 
-    gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: ".hero_main",
-          end: "+=200%",
-          start: () => "top top",
-          scrub: 3,
-          anticipatePin: 1,
-          pin: true,
-        },
+    // Hero section animation
+    const heroTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".hero_pin",
+        start: "top top",
+        end: "+=80%",
+        scrub: 3,
+        pin: true,
+        anticipatePin: 1,
+      },
+    });
+
+    heroTimeline
+      .to(".content", {
+        filter: "blur(40px)",
+        autoAlpha: 0,
+        scale: 0.5,
+        duration: 2,
+        ease: "power1.inOut",
       })
-      .to(
-        ".hero_main .content",
-        {
-          filter: `blur(40px)`,
-          autoAlpha: 0,
-          scale: 0.5,
-          duration: 2,
-          ease: "power1.inOut",
-        },
-        0
-      )
       .to(
         camera.position,
         {
           x: 0,
-          y: window.innerWidth > 768 ? 0 : 0,
-          z: window.innerWidth > 768 ? 500 : 500,
+          y: 0,
+          z: 500,
           duration: 2,
           ease: "power1.inOut",
         },
-        0
+        "<"
       );
 
+    // Lines simulation animation
+    const linesTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".after_hero",
+        //start: "top 80%",
+        //end: "bottom 40%",
+        end: "bottom 40%",
+        scrub: 3,
+      },
+    });
+
+    linesTimeline
+      .fromTo(
+        ".lines-simulation",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power1.inOut",
+        }
+      )
+      .to(".lines-simulation", {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power1.inOut",
+      })
+      .to(".lines-simulation", {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power1.inOut",
+      });
+
+    // Satellite and final camera animation
+    const satelliteTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".last",
+        start: "top 80%",
+        end: "bottom 20%",
+        scrub: 3,
+      },
+    });
+
+    satelliteTimeline
+      .fromTo(
+        ".satellite",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power1.inOut",
+        }
+      )
+      .to(
+        camera.position,
+        {
+          x: -80,
+          y: 80,
+          z: 200,
+          duration: 2,
+          ease: "power1.inOut",
+        },
+        "<"
+      )
+      .to(".satellite", {
+        opacity: 0,
+        duration: 0.5,
+      });
+
+    // Scene rotation
     gsap.ticker.add((time) => {
       scene.rotation.y = time * 0.2;
     });
