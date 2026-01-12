@@ -2,11 +2,10 @@
 
 import initPlanet3D from "@/components/3D/planet";
 import { useEffect } from "react";
-import Basic from "../components/Basic";
 
 export default function Home() {
   useEffect(() => {
-    //initPlanet3D();
+    initPlanet3D();
   }, []);
   return (
     <div className="page">
@@ -20,16 +19,11 @@ export default function Home() {
 
           <button className="cta_btn">Get started.</button>
         </div>
-        {/* <canvas className="planet-3D" /> */}
+        <canvas className="planet-3D" />
 
         <div className="content2">
           <p>Meet our satellite constellation ATLAS !</p>
           <h1>Space-powered intelligence for tomorrow’s airspace.</h1>
-
-          <div></div>
-        </div>
-        <div className="planet">
-          <Basic />
         </div>
       </section>
     </div>
