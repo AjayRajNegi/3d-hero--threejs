@@ -1,11 +1,14 @@
 "use client";
 
 import gsap from "gsap";
+import * as THREE from "three";
 import { ScrollTrigger } from "gsap/all";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import indexBy from "index-array-by";
 import { csvParseRows } from "d3-dsv";
 import dynamic from "next/dynamic";
+import earthVertex from "./3D/shaders/earth/vertex.glsl";
+import earthFragment from "./3D/shaders/earth/fragment.glsl";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -112,9 +115,9 @@ export default function Basic() {
   const handleGlobeReady = () => {
     if (!globeEl.current) return;
 
+    const scene = globeEl.current.scene();
     const camera = globeEl.current.camera();
     const controls = globeEl.current.controls();
-    const scene = globeEl.current.scene();
 
     const size = {
       width: window.innerWidth,
@@ -129,6 +132,7 @@ export default function Basic() {
 
     camera.position.set(0, 110, 150);
     //camera.position.set(0, 0, 500);
+    console.log("asdfsadfs", globeEl.current.getGlobeRadius());
 
     const lookAtPoint = camera.position.clone();
     lookAtPoint.z -= 100;
@@ -140,9 +144,32 @@ export default function Basic() {
       controls.enabled = false;
     }
 
-    // Animations
-    gsap.registerPlugin(ScrollTrigger);
+    //====================== Clouds ======================//
+    const globe = globeEl.current;
 
+    const CLOUDS_IMG_URL = "/earth/clouds.png";
+    const CLOUDS_ALT = 0.006;
+    const CLOUDS_ROTATION_SPEED = -0.02;
+
+    new THREE.TextureLoader().load(CLOUDS_IMG_URL, (cloudsTexture) => {
+      const clouds = new THREE.Mesh(
+        new THREE.SphereGeometry(
+          globe.getGlobeRadius() * (1 + CLOUDS_ALT),
+          75,
+          75
+        ),
+        new THREE.MeshPhongMaterial({ map: cloudsTexture, transparent: true })
+      );
+      globe.scene().add(clouds);
+
+      (function rotateClouds() {
+        clouds.rotation.y += (CLOUDS_ROTATION_SPEED * Math.PI) / 180;
+        requestAnimationFrame(rotateClouds);
+      })();
+    });
+
+    //====================== Animations ======================//
+    gsap.registerPlugin(ScrollTrigger);
     // Hero section animation
     const heroTimeline = gsap.timeline({
       scrollTrigger: {
@@ -254,7 +281,6 @@ export default function Basic() {
     <Globe
       ref={globeEl}
       globeImageUrl="/earth/day.jpg"
-      bumpImageUrl="/earth/specularClouds.jpg"
       showAtmosphere={true}
       backgroundColor="rgba(0,0,0,0)"
       rendererConfig={{
