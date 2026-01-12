@@ -18,10 +18,9 @@ export default function Home() {
           top: "50%",
           left: "0%",
           backgroundColor: "red",
-          text: "white",
+          color: "white",
           width: "50%",
           opacity: 0,
-          display: "none",
         }}
       >
         <p>Meet our satellite constellation ATLAS !</p>
@@ -37,11 +36,10 @@ export default function Home() {
           top: "50%",
           left: "10%",
           backgroundColor: "skyblue",
-          text: "white",
+          color: "white",
           width: "80%",
           margin: "auto",
-          opacity: 1,
-          display: "none",
+          opacity: 0,
           fontSize: "20px",
           padding: "10px",
         }}
@@ -56,7 +54,6 @@ export default function Home() {
       </div>
 
       {/* Screens */}
-
       <section className="hero_pin">
         <div className="content">
           <h1>Welcome To The New World</h1>
@@ -76,6 +73,11 @@ export default function Home() {
         </div>
       </section>
       <section className="last">
+        <h2>Now we scroll normally</h2>
+        <p>This is standard document flow.</p>
+      </section>
+
+      <section className="after_hero">
         <h2>Now we scroll normally</h2>
         <p>This is standard document flow.</p>
       </section>
