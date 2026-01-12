@@ -7,6 +7,8 @@ import { useState, useEffect, useRef, use } from "react";
 import indexBy from "index-array-by";
 import { csvParseRows } from "d3-dsv";
 import dynamic from "next/dynamic";
+import earthVertex from "./3D/shaders/earth/vertex.glsl";
+import earthFragment from "./3D/shaders/earth/fragment.glsl";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -113,9 +115,9 @@ export default function Basic() {
   const handleGlobeReady = () => {
     if (!globeEl.current) return;
 
+    const scene = globeEl.current.scene();
     const camera = globeEl.current.camera();
     const controls = globeEl.current.controls();
-    const scene = globeEl.current.scene();
 
     const size = {
       width: window.innerWidth,
@@ -274,8 +276,6 @@ export default function Basic() {
     });
     gsap.ticker.lagSmoothing(0);
   };
-
-  useEffect(() => {}, []);
 
   return (
     <Globe
