@@ -3,17 +3,14 @@
 import gsap from "gsap";
 import * as THREE from "three";
 import { ScrollTrigger } from "gsap/all";
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import indexBy from "index-array-by";
 import { csvParseRows } from "d3-dsv";
 import dynamic from "next/dynamic";
-import earthVertex from "./3D/shaders/earth/vertex.glsl";
-import earthFragment from "./3D/shaders/earth/fragment.glsl";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 const COUNTRY = "United States";
-const OPACITY = 0.1;
 
 const airportParse = ([
   airportId,
@@ -289,7 +286,6 @@ export default function Basic() {
       }}
       onGlobeReady={handleGlobeReady}
       arcsData={routes}
-      // arcLabel={(d) => `${d.airline}: ${d.srcIata} → ${d.dstIata}`}
       arcStartLat={(d) => +d.srcAirport.lat}
       arcStartLng={(d) => +d.srcAirport.lng}
       arcEndLat={(d) => +d.dstAirport.lat}
